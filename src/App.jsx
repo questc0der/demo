@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { BookmarksPage } from "./pages/BookmarksPage";
-import { BookmarkDetail } from "./pages/BookmarkDetail";
+import { lazy, Suspense } from "react";
 import { fetchBookmarks } from "./api";
 import { Layout } from "./components/Layout";
+
+const BookmarkDetail = lazy(() => import("./pages/BookmarkDetail"));
+
 function App() {
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +47,11 @@ function App() {
           />
           <Route
             path="/bookmarks/:id"
-            element={<BookmarkDetail bookmarks={bookmarks} loading={loading} />}
+            element={
+              <Suspense fallback={<p>Loading page...</p>}>
+                <BookmarkDetail bookmarks={bookmarks} loading={loading} />
+              </Suspense>
+            }
           />
           <Route path="/about" element={<p>About</p>} />
         </Route>
